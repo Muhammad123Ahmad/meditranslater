@@ -165,25 +165,26 @@ function startRecording() {
 
   recognition.onresult = (event) => {
     let interim = '';
-    let currentFinal = '';
+    let finalWords = '';
     
-    // Iterate from the beginning to rebuild the current state carefully
-    // Mobile Chrome sometimes returns duplicate 'isFinal' results in the history
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const transcript = event.results[i][0].transcript;
-      if (event.results[i].isFinal) {
-        finalTranscript += transcript + ' ';
+    // Completely rebuild the transcript from scratch on every event.
+    // This is the only 100% reliable way to fix the "double text" bug on Android/iOS.
+    for (let i = 0; i < event.results.length; i++) {
+      const result = event.results[i];
+      const transcript = result[0].transcript;
+      if (result.isFinal) {
+        finalWords += transcript + ' ';
       } else {
         interim += transcript;
       }
     }
     
-    // Clean up the transcript (removing accidental double spaces)
-    finalTranscript = finalTranscript.replace(/\s\s+/g, ' ');
+    // Store it back to the global so the stopRecording function can still find it
+    finalTranscript = finalWords.trim();
 
-    // Display: final in normal text, interim in italic
+    // UI Update
     originalTextEl.innerHTML =
-      (finalTranscript ? `<span>${escapeHtml(finalTranscript.trim())}</span>` : '') +
+      (finalTranscript ? `<span>${escapeHtml(finalTranscript)}</span>` : '') +
       (interim ? `<span class="interim-text"> ${escapeHtml(interim)}</span>` : '');
   };
 
