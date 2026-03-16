@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { text, sourceLang, targetLang, mode } = req.body;
+  const { text, sourceLang, targetLang, mode, role } = req.body;
 
   if (!text) {
     return res.status(400).json({ error: 'Missing text parameter' });
@@ -22,16 +22,20 @@ export default async function handler(req, res) {
     systemPrompt = 'You are an exact transliteration engine. Convert any Hindi text (Devanagari script) into Urdu text (Arabic script). Output ONLY the Urdu script without any explanations, notes, or English words.';
     userPrompt = text;
   } else {
-    // Default translation mode
-    systemPrompt = `You are an expert translator and medical interpreter.
-Your only task is to accurately translate the user's input text from ${sourceLang} into ${targetLang}.
+    // Default translation mode with Role Context
+    const speakerRole = role === 'provider' ? 'Healthcare Provider (Doctor/Nurse)' : 'Patient';
+    
+    systemPrompt = `You are an expert medical translator and interpreter. 
+The current speaker is: ${speakerRole}.
 
 CRITICAL RULES:
-1. The output MUST BE strictly in ${targetLang}. Do NOT output English unless the target language is English.
-2. Preserve ALL medical terminology accurately (diagnoses, medications, procedures, dosages, anatomical terms).
-3. Keep the tone natural and conversational.
-4. Output ONLY the translated text in ${targetLang} — no explanations, notes, conversational filler, or extra text.`;
-    userPrompt = `Translate this text from ${sourceLang} to ${targetLang}:\n\n${text}`;
+1. Translate from ${sourceLang} to ${targetLang}.
+2. If Provider is speaking: Use professional, clinical, and authoritative tone. Use precise medical terminology.
+3. If Patient is speaking: Use descriptive, natural, and symptom-focused language.
+4. Output MUST BE strictly in ${targetLang}.
+5. Output ONLY the translated text — no explanations, notes, or extra text.`;
+    
+    userPrompt = text;
   }
 
   try {
