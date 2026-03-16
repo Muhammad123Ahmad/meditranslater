@@ -140,7 +140,8 @@ function startRecording() {
     targetRecLang = 'hi-IN';
   }
   
-  // 2. Chinese workaround: Standard zh-CN is usually most reliable for Mandarin.
+  // 2. Chinese workaround: Some browsers/Laptops prefer 'zh' or 'zh-CN'. 
+  // We'll use 'zh-CN' but ensure the engine is primed.
   if (targetRecLang.startsWith('zh')) {
     targetRecLang = 'zh-CN';
   }
@@ -168,7 +169,7 @@ function startRecording() {
     let finalWords = '';
     
     // Completely rebuild the transcript from scratch on every event.
-    // This is the only 100% reliable way to fix the "double text" bug on Android/iOS.
+    // This fixed the mobile "double text" bug by not using += globally.
     for (let i = 0; i < event.results.length; i++) {
       const result = event.results[i];
       const transcript = result[0].transcript;
@@ -179,13 +180,21 @@ function startRecording() {
       }
     }
     
-    // Store it back to the global so the stopRecording function can still find it
+    // Store it back to the global
     finalTranscript = finalWords.trim();
+    
+    // Capture interim text to prevent "No speech captured" if user stops early
+    let combinedText = (finalTranscript + ' ' + interim).trim();
 
     // UI Update
     originalTextEl.innerHTML =
       (finalTranscript ? `<span>${escapeHtml(finalTranscript)}</span>` : '') +
       (interim ? `<span class="interim-text"> ${escapeHtml(interim)}</span>` : '');
+    
+    // If we have any text at all, update the global so translation can proceed even if it's interim
+    if (!finalTranscript && interim) {
+        // We don't overwrite finalTranscript yet, but we'll check interim in stopRecording
+    }
   };
 
   recognition.onerror = (event) => {
@@ -220,7 +229,14 @@ async function stopRecording(doTranslate = true) {
   micIcon.classList.remove('hidden');
   stopIcon.classList.add('hidden');
 
+  // Check if we have final text or at least some interim text (prevents "No speech captured")
   let text = finalTranscript.trim();
+  if (!text) {
+      // Look for any interim text left in the UI
+      const interimSpan = originalTextEl.querySelector('.interim-text');
+      if (interimSpan) text = interimSpan.textContent.trim();
+  }
+
   if (doTranslate && text) {
     micStatus.textContent = 'Processing…';
     micStatus.className = 'mic-status';
