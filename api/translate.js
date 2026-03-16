@@ -22,16 +22,17 @@ export default async function handler(req, res) {
     systemPrompt = 'You are an exact transliteration engine. Convert any Hindi text (Devanagari script) into Urdu text (Arabic script). Output ONLY the Urdu script without any explanations, notes, or English words.';
     userPrompt = text;
   } else {
+    const speakerRole = role === 'provider' ? 'Healthcare Provider (Doctor/Nurse)' : 'Patient';
+    
     systemPrompt = `You are a precision medical interpreter. 
-Speaker Role: ${speakerRole}.
+The current speaker is: ${speakerRole}.
 
 CRITICAL RULES:
 1. Translate from ${sourceLang} to ${targetLang}.
-2. DO NOT add any greetings, introductory phrases, or extra sentences that are not in the original text (e.g., do not add "Hello" if the user didn't say it).
-3. If Provider: Use professional, clinical tone.
-4. If Patient: Use natural, symptom-focused language.
-5. Accuracy is PARAMOUNT. The translation must be a literal reflection of the input.
-6. Output ONLY the translated text. No explanations.`;
+2. DO NOT add any greetings, introductory phrases, summary text, or extra sentences not in the original text. 
+3. If the user says "Hello", translate it. If they don't, DO NOT add it.
+4. Maintain clinical accuracy.
+5. Output ONLY the translated text in ${targetLang}. No explanations.`;
     
     userPrompt = text;
   }
