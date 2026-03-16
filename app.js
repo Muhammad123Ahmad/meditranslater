@@ -142,14 +142,13 @@ function startRecording() {
     targetRecLang = 'hi-IN';
   }
   
-  // 2. Chinese workaround: Chrome's Web Speech API strictly requires 'cmn-*' codes for Mandarin,
-  // but standard BCP47 uses 'zh-*'. If a standard 'zh' code is passed, it often fails instantly.
-  if (targetRecLang === 'zh-CN') {
-    targetRecLang = 'cmn-Hans-CN'; // Mandarin Simplified
-  } else if (targetRecLang === 'zh-TW') {
-    targetRecLang = 'cmn-Hant-TW'; // Mandarin Traditional
-  } else if (targetRecLang === 'zh-HK') {
-    targetRecLang = 'yue-Hant-HK'; // Cantonese
+  // 2. Chinese workaround: Chrome's Web Speech API can be finicky. 
+  // We'll try to use the most compatible tags if the browser is struggling.
+  if (targetRecLang.startsWith('zh')) {
+    // If Simplified is selected, zh-CN is the standard most browsers support.
+    // If Traditional is selected, zh-TW or zh-HK.
+    // We already have these in the select, so we just pass them through.
+    // We remove the strict 'cmn' prefix which may have been causing the fail.
   }
   
   recognition.lang = targetRecLang;
