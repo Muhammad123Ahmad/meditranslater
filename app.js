@@ -165,14 +165,22 @@ function startRecording() {
 
   recognition.onresult = (event) => {
     let interim = '';
-    finalTranscript = '';
-    for (let i = 0; i < event.results.length; i++) {
+    let currentFinal = '';
+    
+    // Iterate from the beginning to rebuild the current state carefully
+    // Mobile Chrome sometimes returns duplicate 'isFinal' results in the history
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
       if (event.results[i].isFinal) {
-        finalTranscript += event.results[i][0].transcript + ' ';
+        finalTranscript += transcript + ' ';
       } else {
-        interim += event.results[i][0].transcript;
+        interim += transcript;
       }
     }
+    
+    // Clean up the transcript (removing accidental double spaces)
+    finalTranscript = finalTranscript.replace(/\s\s+/g, ' ');
+
     // Display: final in normal text, interim in italic
     originalTextEl.innerHTML =
       (finalTranscript ? `<span>${escapeHtml(finalTranscript.trim())}</span>` : '') +
