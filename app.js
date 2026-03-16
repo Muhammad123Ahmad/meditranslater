@@ -11,9 +11,7 @@ const LANGUAGES = [
   { code: 'es-ES',       name: 'Spanish',             bcp47: 'es'  },
   { code: 'fr-FR',       name: 'French',              bcp47: 'fr'  },
   { code: 'de-DE',       name: 'German',              bcp47: 'de'  },
-  { code: 'zh-CN',       name: 'Chinese (Simplified)',bcp47: 'zh'  },
-  { code: 'zh-TW',       name: 'Chinese (Traditional)',bcp47:'zh'  },
-  { code: 'zh-HK',       name: 'Chinese (Hong Kong)', bcp47: 'zh'  },
+  { code: 'zh-CN',       name: 'Chinese (Mandarin)',  bcp47: 'zh'  },
   { code: 'hi-IN',       name: 'Hindi',               bcp47: 'hi'  },
   { code: 'pt-BR',       name: 'Portuguese',          bcp47: 'pt'  },
   { code: 'ru-RU',       name: 'Russian',             bcp47: 'ru'  },
@@ -142,13 +140,9 @@ function startRecording() {
     targetRecLang = 'hi-IN';
   }
   
-  // 2. Chinese workaround: Chrome's Web Speech API can be finicky. 
-  // We'll try to use the most compatible tags if the browser is struggling.
+  // 2. Chinese workaround: Standard zh-CN is usually most reliable for Mandarin.
   if (targetRecLang.startsWith('zh')) {
-    // If Simplified is selected, zh-CN is the standard most browsers support.
-    // If Traditional is selected, zh-TW or zh-HK.
-    // We already have these in the select, so we just pass them through.
-    // We remove the strict 'cmn' prefix which may have been causing the fail.
+    targetRecLang = 'zh-CN';
   }
   
   recognition.lang = targetRecLang;
