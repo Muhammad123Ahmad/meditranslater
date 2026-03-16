@@ -3,35 +3,36 @@
 **Live Prototype:** [https://meditranslater.vercel.app/](https://meditranslater.vercel.app/)
 
 ## 🏥 Project Overview
-MediTranslate is a real-time, multilingual healthcare translation prototype designed to bridge the language gap between patients and healthcare providers. It enables voice-to-text capture, AI-driven medical translation, and high-quality audio playback in over 20 languages.
+MediTranslate is a real-time, multilingual healthcare translation prototype designed to bridge the language gap between patients and healthcare providers. It features a modern, conversational interface with role-aware AI translation and zero-retention privacy protocols.
 
 ---
 
 ## 🚀 Core Features
-- **AI-Enhanced Voice-to-Text**: Captures spoken clinical input with high accuracy.
-- **Real-Time Medical Translation**: Specifically prompted to preserve medical terminology (medications, dosages, anatomical terms).
-- **High-Quality Audio Playback**: Cloud-based TTS for natural pronunciation in any language (including Urdu, Arabic, and Chinese).
-- **Mobile-First Design**: Fully responsive clinical interface optimized for tablets and smartphones.
-- **Zero-Retention Privacy**: No patient data, audio, or transcripts are ever stored on a server or database.
+- **🔄 Conversational Two-Way Mode**: Unified chronological chat transcript between "Healthcare Provider" and "Patient".
+- **🩺 Clinical Role Awareness**: AI dynamically adjusts its tone and terminology based on the speaker's role.
+- **🎙️ Unified Clinical Dashboard**: Consolidated Role, Language, and Recording controls in a single, premium interface.
+- **💎 Premium Aesthetics**: Modern dark-mode UI with glassmorphism effects and custom-styled clinical dropdowns.
+- **🔊 Accurate Audio Playback**: Cloud-based TTS bypasses OS limitations for natural pronunciation in over 20 languages.
+- **🔐 Zero-Retention Privacy**: Conversational data exists only in-memory; all transcripts are instantly wiped upon page refresh or clicking "Clear All".
 
 ---
 
 ## 🛠 Technical Structure & Stack
-The application is built as a highly performant, serverless web application.
+The application is built as a high-performance, serverless clinical tool.
 
-- **Frontend**: Vanilla HTML5, CSS3 (Glassmorphism design), and Modern JavaScript (ES6+).
-- **Speech Recognition**: Web Speech API (Native Browser Engine).
-- **Translation Engine**: **Groq Cloud AI** (Llama 3.3 70B Model) for near-instant, clinical-grade translation.
-- **Speech Synthesis**: Google Cloud TTS API (for consistent cross-browser audio).
+- **Frontend**: Vanilla HTML5, CSS3 (Glassmorphism), and Modern JavaScript (ES6+).
+- **Speech Recognition**: Web Speech API (Native Engine with URDU/HINDI fallbacks).
+- **Translation Engine**: **Groq Cloud AI (Llama 3.3 70B)** — specifically prompted for literal medical precision.
+- **Speech Synthesis**: Google Cloud TTS API (Integrated into chat bubbles).
 - **Backend Architecture**: Vercel Serverless Functions (`/api/translate.js`) to process AI requests securely.
 
 ### **File Structure**
 ```text
 ├── api/
-│   └── translate.js    # Secure backend proxy (handles AI calls & keys)
-├── index.html          # Clinical Dashboard UI
-├── style.css           # Premium medical theme (Dark Mode)
-├── app.js              # Core frontend logic & Speech orchestration
+│   └── translate.js    # Secure backend proxy (handles Role context & AI keys)
+├── index.html          # Unified Clinical Dashboard UI
+├── style.css           # Custom-styled medical theme & Glassmorphism
+├── app.js              # Conversational engine & Speech orchestration
 ├── config.js           # Frontend configuration
 ├── vercel.json         # Deployment & security headers
 └── .gitignore          # Prevents sensitive local keys from being uploaded
@@ -39,38 +40,37 @@ The application is built as a highly performant, serverless web application.
 
 ---
 
-## 🔐 Security & Privacy Considerations
-1. **API Key Protection**: All sensitive API keys are hidden on the **Vercel Secure Server Environment**. The browser/client never sees the Groq key, preventing unauthorized usage or leaks.
-2. **Encryption**: All communication between the user's browser, the backend proxy, and the AI models is transmitted over **HTTPS (TLS 1.3)**.
-3. **Privacy by Design**: 
-   - No database.
-   - No cookies or LocalStorage used for transcripts.
-   - Data is temporary and destroyed the moment the app is cleared or the tab is closed.
-4. **Security Headers**: `vercel.json` implements `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and a strict `Referrer-Policy`.
+## 🔐 Security & Privacy
+1. **API Key Shielding**: Groq API keys are handled exclusively on Vercel's secure backend environment.
+2. **Role-Based Context**: Speaker roles are passed to the AI to ensure diagnostic versus descriptive terminology accuracy.
+3. **Zero-Persistence**: No database is used. Data resides in volatile memory and is never written to disk or local storage.
+4. **Security Headers**: Strict CSP and Referrer-Policy implemented via `vercel.json`.
 
 ---
 
 ## 📖 User Guide
 ### **1. Setup**
-- Open the live link in **Google Chrome** or **Microsoft Edge** (browsers with the best Web Speech support).
-- Grant microphone permissions when prompted.
+- Open the live link in **Google Chrome** or **Microsoft Edge**.
+- Grant microphone permissions.
 
-### **2. Translating a Consultation**
-- Select the **"Speaking In"** language (e.g., English).
-- Select the **"Translate To"** language (e.g., Urdu or Spanish).
-- Click the **Large Blue Microphone** and start speaking your clinical observation.
-- Click the button again (or wait for the pause) to stop.
-- The **original text** and **translated text** will appear in the dual panels.
+### **2. Starting a Consultation**
+- Select the **Speaker Role** (Provider or Patient).
+- Choose the **"From"** and **"To"** languages in the unified control bar.
+- Tap the **Microphone** to record. A live caption overlay will show your speech in real-time.
+- Tap again to stop. The translation will be appended to the chronological history.
 
-### **3. Audio Playback**
-- Click the **🔊 Speak** button under the translation to play the audio back to the patient.
+### **3. Review & Audio**
+- View the interleaved chat bubbles.
+- Tap **"Speak"** in any bubble to play the translation for the other person.
+- Tap **"Copy"** to capture the clinical pair for external documentation.
 
-### **4. Clearing Data**
-- Click the **🗑️ Clear All** button at the bottom to wipe the current transcript and start a new patient consultation.
+### **4. Safety Exit**
+- Click **🗑️ Clear All** to wipe the entire session history permanently.
 
 ---
 
 ## 🤖 Generative AI Usage
-This project was developed using **Antigravity (Google DeepMind)**. 
-- **Coding**: AI assisted in architecting the speech event listeners, the CSS glassmorphism system, and the secure serverless proxy.
-- **Translation**: AI is utilized via the Groq Cloud API to provide context-aware medical translations that standard translation engines often miss.
+Developed using **Antigravity (Google DeepMind)**.
+- **Architecture**: AI assisted in designing the chronological transcript engine and the secure serverless backend.
+- **Refinement**: AI refined the clinical tone prompts and fixed complex CSS layout overlaps.
+- **Execution**: Used for rapid prototyping and ensuring literal translation accuracy for medical safety.
